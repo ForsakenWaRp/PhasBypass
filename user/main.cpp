@@ -111,10 +111,13 @@ void Run()
 	DetourAttach(&(PVOID&)CheckForGetModuleHandle, TryGetModuleHandleHook);
 	DetourAttach(&(PVOID&)CheckProcessesForMods, CheckProcessesForModsFunc);
 	DetourAttach(&(PVOID&)CheckForMods, CheckForModsFunc);
-	DetourAttach(&(PVOID&)__104_____________7, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104____________, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________1, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________2, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________4, DoNothingMethod);
-	DetourAttach(&(PVOID&)__104_____________8, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________6, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________7, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________8, DoNothingMethod);
 	DetourAttach(&(PVOID&)File_Exists, File_Exists_Hook);
 	DetourAttach(&(PVOID&)Directory_Exists, Directory_Exists_Hook);
 	DetourAttach(&(PVOID&)String_Contains, String_Contains_Hook);
