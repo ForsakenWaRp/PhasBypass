@@ -15,11 +15,14 @@
 
 using namespace app;
 
+extern const LPCWSTR LOG_FILE = L"bypass-log.txt";
+
 const std::string NotMelonLoader = "totally_not_melon_loader";
 String* not_melon_loader;
 
 void DoNothingMethod(MethodInfo* method)
 {
+	//LogWrite("DoNothingCalled");
 }
 
 bool File_Exists_Hook(String* str, MethodInfo* method)
@@ -28,10 +31,12 @@ bool File_Exists_Hook(String* str, MethodInfo* method)
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
 
-	if (skey.find("dll") != std::string::npos || skey.find(NotMelonLoader) != std::string::npos)
+	if(skey.find("dll") != std::string::npos || skey.find(NotMelonLoader) != std::string::npos)
 	{
 		return false;
 	}
+
+	//LogWrite("FileHooked\n");
 
 	return File_Exists(str, method);
 }
@@ -42,12 +47,30 @@ bool Directory_Exists_Hook(String* str, MethodInfo* method)
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
 
-	if (skey.find("MelonLoader") != std::string::npos || skey.find(NotMelonLoader) != std::string::npos)
+	if(skey.find("MelonLoader") != std::string::npos || skey.find(NotMelonLoader) != std::string::npos)
 	{
 		return false;
 	}
 
+	//LogWrite("DirectoryHooked\n");
+
 	return Directory_Exists(str, method);
+}
+
+bool String_Contains_Hook(String* str, String* str2, MethodInfo* method)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> wideToNarrow;
+	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
+		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
+
+	//LogWrite(skey);
+
+	if(skey.find("MelonLoader") != std::string::npos || skey.find(NotMelonLoader) != std::string::npos)
+	{
+		return false;
+	}
+
+	return String_Contains(str, str2, method);
 }
 
 void* TryGetModuleHandleHook(String* str, MethodInfo* method)
@@ -57,6 +80,8 @@ void* TryGetModuleHandleHook(String* str, MethodInfo* method)
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
 
+	//LogWrite(skey);
+
 	return nullptr;
 }
 
@@ -65,20 +90,39 @@ String* GetMelonLoaderSearchStrings(Byte__Array* theArray, bool b, MethodInfo* m
 	return not_melon_loader;
 }
 
+void CheckProcessesForModsFunc(MethodInfo* method)
+{
+	//LogWrite("CheckProcessesForMods");
+}
+
+void CheckForModsFunc(MethodInfo* method)
+{
+	//LogWrite("DoNothingCalled");
+}
+
 void Run()
 {
 	NewConsole();
+
+	LogWrite("Starting Hooks");
 	not_melon_loader = (String*)il2cpp_string_new(NotMelonLoader.c_str());
 	DetourTransactionBegin();
 	DetourUpdateThread(GetCurrentThread());
-	DetourAttach(&(PVOID&)__102____________, DoNothingMethod);
-	DetourAttach(&(PVOID&)__102_____________1, DoNothingMethod);
-	DetourAttach(&(PVOID&)__101_____________7, TryGetModuleHandleHook);
+	DetourAttach(&(PVOID&)CheckForGetModuleHandle, TryGetModuleHandleHook);
+	DetourAttach(&(PVOID&)CheckProcessesForMods, CheckProcessesForModsFunc);
+	DetourAttach(&(PVOID&)CheckForMods, CheckForModsFunc);
+	DetourAttach(&(PVOID&)__104_____________7, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________4, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________8, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________6, DoNothingMethod);
 	DetourAttach(&(PVOID&)File_Exists, File_Exists_Hook);
 	DetourAttach(&(PVOID&)Directory_Exists, Directory_Exists_Hook);
-	DetourAttach(&(PVOID&)__199_____________15, GetMelonLoaderSearchStrings);
-	/*DetourAttach(&(PVOID&)Application_Quit_1, DoNothingMethod);
-	DetourAttach(&(PVOID&)Application_Quit, DoNothingMethod);
-	DetourAttach(&(PVOID&)Utils_1_ForceCrash, DoNothingMethod);*/
-	DetourTransactionCommit();
+	DetourAttach(&(PVOID&)String_Contains, String_Contains_Hook);
+	LONG lError = DetourTransactionCommit();
+	if(lError != NO_ERROR)
+	{
+		LogWrite("Hook Failed");
+	}
+
+	LogWrite("Bypass hooked");
 }
