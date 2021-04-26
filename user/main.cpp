@@ -108,9 +108,9 @@ void Run()
 	not_melon_loader = (String*)il2cpp_string_new(NotMelonLoader.c_str());
 	DetourTransactionBegin();
 	DetourUpdateThread(GetCurrentThread());
-	DetourAttach(&(PVOID&)CheckForGetModuleHandle, TryGetModuleHandleHook);
-	DetourAttach(&(PVOID&)CheckProcessesForMods, CheckProcessesForModsFunc);
-	DetourAttach(&(PVOID&)CheckForMods, CheckForModsFunc);
+	DetourAttach(&(PVOID&)__104_____________9, TryGetModuleHandleHook);
+	DetourAttach(&(PVOID&)__105____________, CheckProcessesForModsFunc);
+	DetourAttach(&(PVOID&)__105_____________1, CheckForModsFunc);
 	DetourAttach(&(PVOID&)__104____________, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________1, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________2, DoNothingMethod);
