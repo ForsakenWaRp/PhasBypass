@@ -16,13 +16,14 @@ uintptr_t GetBaseAddress() {
 
 // Helper function to append text to a file
 void LogWrite(std::string text) {
+    printf(text.c_str());
     HANDLE hfile = CreateFileW(LOG_FILE, FILE_APPEND_DATA, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (hfile == INVALID_HANDLE_VALUE)
         MessageBoxW(0, L"Could not open log file", 0, 0);
 
     DWORD written;
-    WriteFile(hfile, text.c_str(), (DWORD) text.length(), &written, NULL);
+    WriteFile(hfile, text.c_str(), (DWORD)text.length(), &written, NULL);
     WriteFile(hfile, "\r\n", 2, &written, NULL);
     CloseHandle(hfile);
 }

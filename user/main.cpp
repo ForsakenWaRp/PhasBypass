@@ -15,14 +15,14 @@
 
 using namespace app;
 
-//extern const LPCWSTR LOG_FILE = L"bypass-log.txt";
+extern const LPCWSTR LOG_FILE = L"bypass-log.txt";
 
-const std::string NotMelonLoader = "heyho";
+const std::string NotMelonLoader = "totally_not_melon_loader";
 String* not_melon_loader;
 
 void DoNothingMethod(MethodInfo* method)
 {
-	//LogWrite("DoNothingCalled");
+	//LogWrite("DoNothingMethod");
 }
 
 bool File_Exists_Hook(String* str, MethodInfo* method)
@@ -31,12 +31,13 @@ bool File_Exists_Hook(String* str, MethodInfo* method)
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
 
+
 	if(skey.find("dll") != std::string::npos || skey.find(NotMelonLoader) != std::string::npos)
 	{
 		return false;
 	}
+	//LogWrite("File_Exists_Hook");
 
-	//LogWrite("FileHooked\n");
 
 	return File_Exists(str, method);
 }
@@ -47,12 +48,13 @@ bool Directory_Exists_Hook(String* str, MethodInfo* method)
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
 
+
 	if(skey.find("MelonLoader") != std::string::npos || skey.find(NotMelonLoader) != std::string::npos)
 	{
 		return false;
 	}
+	//LogWrite("Directory_Exists_Hook");
 
-	//LogWrite("DirectoryHooked\n");
 
 	return Directory_Exists(str, method);
 }
@@ -63,30 +65,34 @@ bool String_Contains_Hook(String* str, String* str2, MethodInfo* method)
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
 
-	//LogWrite(skey);
 
-	if(skey.find("MelonLoader") != std::string::npos || skey.find(NotMelonLoader) != std::string::npos)
+	if(skey.find("MelonLoader") != std::string::npos
+		|| skey.find(NotMelonLoader) != std::string::npos
+		|| skey.find("bypass-log.txt") != std::string::npos
+		|| skey.find("PhasBypass.dll") != std::string::npos
+		|| skey.find("version.dll") != std::string::npos)
 	{
 		return false;
 	}
+	//LogWrite("String_Contains_Hook: " + skey);
 
 	return String_Contains(str, str2, method);
 }
 
 void* TryGetModuleHandleHook(String* str, MethodInfo* method)
 {
-
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> wideToNarrow;
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
 
-	//LogWrite(skey);
+	//LogWrite("TryGetModuleHandleHook: " + skey);
 
 	return nullptr;
 }
 
 String* GetMelonLoaderSearchStrings(Byte__Array* theArray, bool b, MethodInfo* method)
 {
+	//LogWrite("GetMelonLoaderSearchStrings");
 	return not_melon_loader;
 }
 
@@ -95,7 +101,7 @@ void Run()
 {
 	NewConsole();
 
-	LogWrite("Starting Hooks");
+	LogWrite("[Cr:4n:kS.t4r] [MelonLoader] [C4PhasByP] Starting Hooks\n");
 	not_melon_loader = (String*)il2cpp_string_new(NotMelonLoader.c_str());
 	DetourTransactionBegin();
 	DetourUpdateThread(GetCurrentThread());
@@ -106,17 +112,22 @@ void Run()
 	DetourAttach(&(PVOID&)__104_____________6, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________7, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________8, DoNothingMethod);
-	DetourAttach(&(PVOID&)__104_____________9, TryGetModuleHandleHook);
+	DetourAttach(&(PVOID&)__104_____________9, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________10, TryGetModuleHandleHook);
 	DetourAttach(&(PVOID&)__105____________, DoNothingMethod);
 	DetourAttach(&(PVOID&)__105_____________1, DoNothingMethod);
 	DetourAttach(&(PVOID&)File_Exists, File_Exists_Hook);
 	DetourAttach(&(PVOID&)Directory_Exists, Directory_Exists_Hook);
 	DetourAttach(&(PVOID&)String_Contains, String_Contains_Hook);
+
+	/*DetourAttach(&(PVOID&)Application_Quit_1, DoNothingMethod);
+	DetourAttach(&(PVOID&)Application_Quit, DoNothingMethod);
+	DetourAttach(&(PVOID&)Utils_1_ForceCrash, DoNothingMethod);*/
 	LONG lError = DetourTransactionCommit();
 	if(lError != NO_ERROR)
 	{
-		LogWrite("Hook Failed");
+		LogWrite("[Cr:4n:kS.t4r] [MelonLoader] [C4PhasByP] Hook Failed\n");
 	}
 
-	LogWrite("Bypass hooked");
+	LogWrite("[Cr:4n:kS.t4r] [MelonLoader] [C4PhasByP] Bypass hooked\n");
 }
