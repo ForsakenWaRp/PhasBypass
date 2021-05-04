@@ -15,9 +15,9 @@
 
 using namespace app;
 
-extern const LPCWSTR LOG_FILE = L"bypass-log.txt";
+//extern const LPCWSTR LOG_FILE = L"bypass-log.txt";
 
-const std::string NotMelonLoader = "totally_not_melon_loader";
+const std::string NotMelonLoader = "heyho";
 String* not_melon_loader;
 
 void DoNothingMethod(MethodInfo* method)
@@ -90,15 +90,6 @@ String* GetMelonLoaderSearchStrings(Byte__Array* theArray, bool b, MethodInfo* m
 	return not_melon_loader;
 }
 
-void CheckProcessesForModsFunc(MethodInfo* method)
-{
-	//LogWrite("CheckProcessesForMods");
-}
-
-void CheckForModsFunc(MethodInfo* method)
-{
-	//LogWrite("DoNothingCalled");
-}
 
 void Run()
 {
@@ -108,9 +99,6 @@ void Run()
 	not_melon_loader = (String*)il2cpp_string_new(NotMelonLoader.c_str());
 	DetourTransactionBegin();
 	DetourUpdateThread(GetCurrentThread());
-	DetourAttach(&(PVOID&)__104_____________9, TryGetModuleHandleHook);
-	DetourAttach(&(PVOID&)__105____________, CheckProcessesForModsFunc);
-	DetourAttach(&(PVOID&)__105_____________1, CheckForModsFunc);
 	DetourAttach(&(PVOID&)__104____________, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________1, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________2, DoNothingMethod);
@@ -118,6 +106,9 @@ void Run()
 	DetourAttach(&(PVOID&)__104_____________6, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________7, DoNothingMethod);
 	DetourAttach(&(PVOID&)__104_____________8, DoNothingMethod);
+	DetourAttach(&(PVOID&)__104_____________9, TryGetModuleHandleHook);
+	DetourAttach(&(PVOID&)__105____________, DoNothingMethod);
+	DetourAttach(&(PVOID&)__105_____________1, DoNothingMethod);
 	DetourAttach(&(PVOID&)File_Exists, File_Exists_Hook);
 	DetourAttach(&(PVOID&)Directory_Exists, Directory_Exists_Hook);
 	DetourAttach(&(PVOID&)String_Contains, String_Contains_Hook);
