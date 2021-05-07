@@ -4,6 +4,7 @@
 #include "pch-il2cpp.h"
 
 #define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
 #include <codecvt>
 #include <Windows.h>
 #include <iostream>
@@ -22,7 +23,9 @@ String* not_melon_loader;
 
 void DoNothingMethod(MethodInfo* method)
 {
-	//LogWrite("DoNothingMethod");
+	#ifdef _DEEPDEBUG
+		LogWrite("DoNothingMethod");
+	#endif
 }
 
 bool File_Exists_Hook(String* str, MethodInfo* method)
@@ -36,7 +39,9 @@ bool File_Exists_Hook(String* str, MethodInfo* method)
 	{
 		return false;
 	}
-	//LogWrite("File_Exists_Hook");
+	#ifdef _DEBUG
+		LogWrite("File_Exists_Hook");
+	#endif
 
 
 	return File_Exists(str, method);
@@ -53,7 +58,9 @@ bool Directory_Exists_Hook(String* str, MethodInfo* method)
 	{
 		return false;
 	}
-	//LogWrite("Directory_Exists_Hook");
+	#ifdef _DEBUG
+		LogWrite("Directory_Exists_Hook");
+	#endif
 
 
 	return Directory_Exists(str, method);
@@ -74,7 +81,9 @@ bool String_Contains_Hook(String* str, String* str2, MethodInfo* method)
 	{
 		return false;
 	}
-	//LogWrite("String_Contains_Hook: " + skey);
+	#ifdef _DEBUG
+		LogWrite("String_Contains_Hook: " + skey);
+	#endif
 
 	return String_Contains(str, str2, method);
 }
@@ -84,15 +93,18 @@ void* TryGetModuleHandleHook(String* str, MethodInfo* method)
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> wideToNarrow;
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
-
-	//LogWrite("TryGetModuleHandleHook: " + skey);
+	#ifdef _DEBUG
+		LogWrite("TryGetModuleHandleHook: " + skey);
+	#endif
 
 	return nullptr;
 }
 
 String* GetMelonLoaderSearchStrings(Byte__Array* theArray, bool b, MethodInfo* method)
 {
-	//LogWrite("GetMelonLoaderSearchStrings");
+	#ifdef _DEBUG
+		LogWrite("GetMelonLoaderSearchStrings");
+	#endif
 	return not_melon_loader;
 }
 
@@ -120,9 +132,11 @@ void Run()
 	DetourAttach(&(PVOID&)Directory_Exists, Directory_Exists_Hook);
 	DetourAttach(&(PVOID&)String_Contains, String_Contains_Hook);
 
-	/*DetourAttach(&(PVOID&)Application_Quit_1, DoNothingMethod);
-	DetourAttach(&(PVOID&)Application_Quit, DoNothingMethod);
-	DetourAttach(&(PVOID&)Utils_1_ForceCrash, DoNothingMethod);*/
+	#ifdef _DEBUG
+		DetourAttach(&(PVOID&)Application_Quit_1, DoNothingMethod);
+		DetourAttach(&(PVOID&)Application_Quit, DoNothingMethod);
+		DetourAttach(&(PVOID&)Utils_1_ForceCrash, DoNothingMethod);
+	#endif
 	LONG lError = DetourTransactionCommit();
 	if(lError != NO_ERROR)
 	{
