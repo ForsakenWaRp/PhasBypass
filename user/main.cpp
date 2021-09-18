@@ -112,8 +112,8 @@ void Run()
 	il2cppi_new_console();
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, 12);
-	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] !!! ONLY FOR !!! Server version: 0.3.0.5");
-	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] !!! ONLY FOR !!! Steam Build ID: 7323555");
+	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] !!! ONLY FOR !!! Server version: 0.3.1.0");
+	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] !!! ONLY FOR !!! Steam Build ID: 7379698");
 	SetConsoleTextAttribute(hConsole, 14);
 	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] Creating Hooks!");
 	not_melon_loader = (String*)il2cpp_string_new(NotMelonLoader.c_str());
