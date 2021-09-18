@@ -20,11 +20,14 @@ extern const LPCWSTR LOG_FILE = L"bypass-log.txt";
 
 const std::string NotMelonLoader = "totally_not_melon_loader";
 String* not_melon_loader;
+HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 void DoNothingMethod(MethodInfo* method)
 {
 #ifdef _DEEPDEBUG
-	il2cppi_log_write("DoNothingMethod");
+	SetConsoleTextAttribute(hConsole, 12);
+	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] [LOG] DoNothingMethod");
+	SetConsoleTextAttribute(hConsole, 15);
 #endif
 }
 
@@ -39,7 +42,9 @@ bool File_Exists_Hook(String* str, MethodInfo* method)
 	}
 
 #ifdef _DEBUG
-	il2cppi_log_write("File_Exists_Hook: " + skey);
+	SetConsoleTextAttribute(hConsole, 12);
+	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] [LOG] File_Exists_Hook: " + skey);
+	SetConsoleTextAttribute(hConsole, 15);
 #endif
 
 	return File_Exists(str, method);
@@ -56,7 +61,9 @@ bool Directory_Exists_Hook(String* str, MethodInfo* method)
 	}
 
 #ifdef _DEBUG
-	il2cppi_log_write("Directory_Exists_Hook: " + skey);
+	SetConsoleTextAttribute(hConsole, 12);
+	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] [LOG] Directory_Exists_Hook: " + skey);
+	SetConsoleTextAttribute(hConsole, 15);
 #endif
 
 	return Directory_Exists(str, method);
@@ -80,7 +87,9 @@ bool String_Contains_Hook(String* str, String* str2, MethodInfo* method)
 	}
 
 #ifdef _DEBUG
-	il2cppi_log_write("String_Contains_Hook: " + skey);
+	SetConsoleTextAttribute(hConsole, 12);
+	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] [LOG] String_Contains_Hook: " + skey);
+	SetConsoleTextAttribute(hConsole, 15);
 #endif
 
 	return String_Contains(str, str2, method);
@@ -92,7 +101,9 @@ void* TryGetModuleHandleHook(String* str, MethodInfo* method)
 	std::string skey = wideToNarrow.to_bytes(std::wstring((const wchar_t*)
 		(&((Il2CppString*)str)->chars), ((Il2CppString*)str)->length));
 	#ifdef _DEBUG
-	il2cppi_log_write("TryGetModuleHandleHook: " + skey);
+	SetConsoleTextAttribute(hConsole, 12);
+	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] [LOG] TryGetModuleHandleHook: " + skey);
+	SetConsoleTextAttribute(hConsole, 15);
 	#endif
 
 	return nullptr;
@@ -101,7 +112,9 @@ void* TryGetModuleHandleHook(String* str, MethodInfo* method)
 String* GetMelonLoaderSearchStrings(Byte__Array* theArray, bool b, MethodInfo* method)
 {
 	#ifdef _DEBUG
-		il2cppi_log_write("GetMelonLoaderSearchStrings");
+		SetConsoleTextAttribute(hConsole, 12);
+		il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] [LOG] GetMelonLoaderSearchStrings");
+		SetConsoleTextAttribute(hConsole, 15);
 	#endif
 	return not_melon_loader;
 }
@@ -110,7 +123,6 @@ String* GetMelonLoaderSearchStrings(Byte__Array* theArray, bool b, MethodInfo* m
 void Run()
 {
 	il2cppi_new_console();
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, 12);
 	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] !!! ONLY FOR !!! Server version: 0.3.1.0 - Hotfix");
 	il2cppi_log_write("[Cr:4n:kS.t4r] [C4PhasByP] !!! ONLY FOR !!! Steam Build ID: 7382984");
