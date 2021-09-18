@@ -6,5 +6,5 @@ Tried with BepInEx/Doorstop, AND MelonLoader !
   
   
 # Working for  
-**Server version:** 0.3.1.0  
-**Steam Build ID:** 7379698  
+**Server version:** 0.3.1.0 - Hotfix  
+**Steam Build ID:** 7382984  
